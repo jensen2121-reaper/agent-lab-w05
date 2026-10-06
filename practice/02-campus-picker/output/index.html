@@ -542,9 +542,17 @@
         return; // 無結果不加入歷史紀錄
       }
 
-      // 隨機抽一個
-      const randomIndex = Math.floor(Math.random() * filtered.length);
-      const selected = filtered[randomIndex];
+      // 隨機抽一個（新增需求：當符合數量 > 1 時，避免連續兩次重複抽中同一活動）
+      let candidates = filtered;
+      if (filtered.length > 1 && currentPick && currentPick !== "empty") {
+        const withoutPrev = filtered.filter(item => item.id !== currentPick.id);
+        if (withoutPrev.length > 0) {
+          candidates = withoutPrev;
+        }
+      }
+
+      const randomIndex = Math.floor(Math.random() * candidates.length);
+      const selected = candidates[randomIndex];
       currentPick = selected;
 
       // 加入歷史紀錄（最新在最前，上限5筆）
